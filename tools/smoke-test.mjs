@@ -15,6 +15,10 @@ const html = `<!doctype html><html class="gt-js"><body>
 <a data-gt="button" data-gt-style="arrow" href="#">Go</a>
 <div data-gt="marquee"><span>one</span><span>two</span></div>
 <p data-gt="text-scrub">scrub these words</p>
+<span data-gt="counter">$1,200+</span><div data-gt="progress"></div>
+<ul data-gt="hover-list"><li><a href="#" data-gt-hover-src="x.jpg">Item</a></li></ul>
+<a data-gt="magnetic" href="#">m</a><div data-gt="cursor"></div>
+<div id="cms" data-gt-observe></div>
 </body></html>`;
 const dom = new JSDOM(html, { runScripts: 'outside-only', pretendToBeVisual: true, url: 'http://localhost/' });
 const w = dom.window;
@@ -43,6 +47,12 @@ const checks = {
   'transition attr set': !!w.document.documentElement.dataset.gtTransition,
 };
 q('[data-gt-nav=toggle]').click();
+checks['counter keeps final value for AT'] = q('[data-gt=counter]').getAttribute('aria-label') === '$1,200+';
+checks['hover preview created'] = !!q('.gt-hover-preview');
+checks['cursor hidden from AT'] = q('[data-gt=cursor]').getAttribute('aria-hidden') === 'true';
+q('#cms').innerHTML = '<span data-gt="counter" data-gt-to="5">0</span>';
+await new Promise((r) => setTimeout(r, 400));
+checks['observed container re-inits new items'] = q('#cms [data-gt=counter]').getAttribute('aria-label') === '0';
 checks['nav landmark label'] = q('nav').getAttribute('aria-label') === 'Main';
 checks['non-button toggle gets role+tabindex'] = q('[data-gt-nav=toggle]').getAttribute('role') === 'button' && q('[data-gt-nav=toggle]').getAttribute('tabindex') === '0';
 checks['dropdown aria wired'] = q('[data-gt-nav=dropdown-toggle]').getAttribute('aria-expanded') === 'false' && !!q('[data-gt-nav=dropdown-toggle]').getAttribute('aria-controls');

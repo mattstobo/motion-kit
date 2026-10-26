@@ -4,15 +4,15 @@
 **Site settings → Custom code → Head**
 ```html
 <script>(function(d){var r=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!r)d.documentElement.classList.add('gt-js');try{var v=sessionStorage.getItem('gt-tv');if(v)d.documentElement.dataset.gtTransition=v}catch(e){}setTimeout(function(){if(!window.MotionKit)d.documentElement.classList.remove('gt-js')},4000)})(document)</script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mattstobo/motion-kit@1.1.0/dist/motion-kit.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mattstobo/motion-kit@1.1.0/dist/gt-transitions.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mattstobo/motion-kit@1.2.0/dist/motion-kit.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mattstobo/motion-kit@1.2.0/dist/gt-transitions.min.css">
 ```
 **Footer**
 ```html
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/mattstobo/motion-kit@1.1.0/dist/motion-kit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mattstobo/motion-kit@1.2.0/dist/motion-kit.min.js"></script>
 ```
 Always pin a release tag. Never `@main`. The repo must be public for jsDelivr.
 If the kit fails to load, the head snippet removes `gt-js` after 4s so nothing stays hidden.
@@ -37,6 +37,29 @@ Colours: `--gt-link-color`, `--gt-link-thickness`, `--gt-button-fill`, `--gt-but
 Roles: `data-gt-nav="root | toggle | panel | item | icon | backdrop"`. Params on the root:
 `data-gt-nav-style` slide/fade/clip, `-from` right/left/top/bottom, `-duration` (0.7), `-ease`, `-stagger` (0.06), `-item-distance` (2rem), `-breakpoint` (991), `-close-on-link` (true), `-scroll-lock` (true).
 Root gets `data-gt-nav-state="open|closed"` for styling hooks. Esc closes, focus is trapped, background is inert while open.
+
+## More modules (v1.2)
+| `data-gt` | What it does | Options |
+|---|---|---|
+| `counter` | Counts up to the number in the text ($1,200+ keeps its prefix and suffix) | `to`, `from` (0), `duration` (2), `decimals`, `start` |
+| `scheme` | Page background and text colour change per section | `bg`, `color` |
+| `progress` | Scroll progress bar (give it a fixed, full-width, thin element) | none |
+| `section-nav` | Put on a wrapper of `#anchor` links. Marks the visible section with `.is-active` and `aria-current` | none |
+| `magnetic` | Element drifts toward the cursor (desktop only) | `strength` (0.3) |
+| `cursor` | A follower element. Grows over anything with `data-gt-cursor-hover` | `lag` (0.25), `hover-scale` (2.5) |
+| `hscroll` | Pinned horizontal scroll on desktop (≥992px). Needs a child `data-gt-hscroll-track`. Stacks normally on mobile | `scrub` (1) |
+| `hover-list` | Floating image follows the cursor over items carrying `data-gt-hover-src` (bind it to a CMS image field) | `offset-x` |
+| `loader` | Full-screen overlay that slides away after load. Never blocks longer than 4s | `min` (0.8s) |
+
+Smooth scroll: load Lenis before the kit and put `data-gt-smooth` on any element (optional `data-gt-smooth-duration`, 1.2).
+Switch the kit off for debugging: `?gt=off` in the URL, or `MotionKitConfig = { enabled: false }`.
+Debug panel: `?gt-debug` outlines every kit element and lists counts, unknown module names and errors.
+
+## Using the kit with the CMS
+- Attributes on elements inside a Collection Item repeat for every item. You can also bind an attribute's value to a CMS field (e.g. `data-gt-hover-src`, `data-gt-bg`, `data-gt-to`).
+- Put `data-gt="reveal-group"` on the Collection List (the element with the items) so each item staggers in.
+- For filters, load-more, or pagination, add `data-gt-observe` to the list wrapper. New items are picked up automatically. Or call `MotionKit.refresh(element)` after injecting markup.
+- Sections made as Webflow Components can be placed in CMS lists and edited in one place, but check each component's props. Attributes you want to vary per item must be exposed as props.
 
 ## Dropdowns
 Inside the nav root: `data-gt-nav="dropdown"` wraps a `dropdown-toggle` (button) and a `dropdown-menu`. Optional `dropdown-icon` rotates when open.
