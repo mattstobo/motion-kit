@@ -1,0 +1,78 @@
+/*
+  motion-kit page transitions (CSS cross-document View Transitions)
+  Chrome/Edge 126+, Safari 18.2+. Unsupported browsers just navigate normally.
+  Variant is chosen by <html data-gt-transition="...">. Tune with CSS variables on :root.
+  Variants: fade, fade-up, wipe-up, wipe-left, mask-circle, mask-diamond, slide, curtain
+*/
+@view-transition{ navigation:auto; }
+
+:root{
+  --gt-tv-duration: .7s;
+  --gt-tv-ease: cubic-bezier(.65,0,.35,1);
+  --gt-tv-x: 50%;   /* origin for mask-circle */
+  --gt-tv-y: 50%;
+  --gt-tv-distance: 2rem;
+}
+
+::view-transition-old(root),
+::view-transition-new(root){
+  animation-duration: var(--gt-tv-duration);
+  animation-timing-function: var(--gt-tv-ease);
+  animation-fill-mode: both;
+  mix-blend-mode: normal;
+}
+
+/* Persistent chrome: add data-gt-persist="nav" / "footer" to keep these from animating */
+[data-gt-persist="nav"]{ view-transition-name: gt-nav; }
+[data-gt-persist="footer"]{ view-transition-name: gt-footer; }
+::view-transition-group(gt-nav),
+::view-transition-group(gt-footer){ animation-duration: 0s; }
+::view-transition-old(gt-nav),
+::view-transition-old(gt-footer){ display:none; }
+
+/* ----- fade (default) ----- */
+html:not([data-gt-transition]) ::view-transition-old(root),
+html[data-gt-transition="fade"]::view-transition-old(root){ animation-name: gt-fade-out; }
+html:not([data-gt-transition]) ::view-transition-new(root),
+html[data-gt-transition="fade"]::view-transition-new(root){ animation-name: gt-fade-in; }
+
+/* ----- fade-up ----- */
+html[data-gt-transition="fade-up"]::view-transition-old(root){ animation-name: gt-fade-out; }
+html[data-gt-transition="fade-up"]::view-transition-new(root){ animation-name: gt-fade-up-in; }
+
+/* ----- wipes: new page revealed over the old one ----- */
+html[data-gt-transition="wipe-up"]::view-transition-old(root),
+html[data-gt-transition="wipe-left"]::view-transition-old(root),
+html[data-gt-transition="mask-circle"]::view-transition-old(root),
+html[data-gt-transition="mask-diamond"]::view-transition-old(root){ animation: none; z-index:1; }
+html[data-gt-transition="wipe-up"]::view-transition-new(root){ animation-name: gt-wipe-up; z-index:2; }
+html[data-gt-transition="wipe-left"]::view-transition-new(root){ animation-name: gt-wipe-left; z-index:2; }
+html[data-gt-transition="mask-circle"]::view-transition-new(root){ animation-name: gt-mask-circle; z-index:2; }
+html[data-gt-transition="mask-diamond"]::view-transition-new(root){ animation-name: gt-mask-diamond; z-index:2; }
+
+/* ----- slide: old pushed left, new slides in ----- */
+html[data-gt-transition="slide"]::view-transition-old(root){ animation-name: gt-slide-out; }
+html[data-gt-transition="slide"]::view-transition-new(root){ animation-name: gt-slide-in; }
+
+/* ----- curtain: old page lifts away upward ----- */
+html[data-gt-transition="curtain"]::view-transition-old(root){ animation-name: gt-curtain; z-index:2; }
+html[data-gt-transition="curtain"]::view-transition-new(root){ animation: none; z-index:1; }
+
+@keyframes gt-fade-out{ to{ opacity:0; } }
+@keyframes gt-fade-in{ from{ opacity:0; } }
+@keyframes gt-fade-up-in{ from{ opacity:0; transform:translateY(var(--gt-tv-distance)); } }
+@keyframes gt-wipe-up{ from{ clip-path:inset(100% 0 0 0); } to{ clip-path:inset(0 0 0 0); } }
+@keyframes gt-wipe-left{ from{ clip-path:inset(0 0 0 100%); } to{ clip-path:inset(0 0 0 0); } }
+@keyframes gt-mask-circle{ from{ clip-path:circle(0% at var(--gt-tv-x) var(--gt-tv-y)); } to{ clip-path:circle(150% at var(--gt-tv-x) var(--gt-tv-y)); } }
+@keyframes gt-mask-diamond{
+  from{ clip-path:polygon(50% 50%,50% 50%,50% 50%,50% 50%); }
+  to{ clip-path:polygon(50% -100%,200% 50%,50% 200%,-100% 50%); }
+}
+@keyframes gt-slide-out{ to{ transform:translateX(-25%); opacity:.4; } }
+@keyframes gt-slide-in{ from{ transform:translateX(100%); } }
+@keyframes gt-curtain{ from{ clip-path:inset(0 0 0 0); } to{ clip-path:inset(0 0 100% 0); } }
+
+@media (prefers-reduced-motion: reduce){
+  @view-transition{ navigation:none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*){ animation:none !important; }
+}

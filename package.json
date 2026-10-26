@@ -1,0 +1,16 @@
+{
+  "name": "motion-kit",
+  "version": "1.0.0",
+  "description": "Data-attribute GSAP motion kit for Webflow builds",
+  "private": false,
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "type-scale": "node tools/type-scale.mjs",
+    "test": "node tools/smoke-test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "gsap": "3.15.0",
+    "jsdom": "^26.0.0"
+  }
+}
