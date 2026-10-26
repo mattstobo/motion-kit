@@ -1,4 +1,4 @@
-import { attr, num, toPx, remPx } from '../core.js';
+import { attr, num, bool, remPx, a11yButton } from '../core.js';
 
 // data-gt="marquee" data-gt-speed="5" (rem/s) data-gt-boost="4" data-gt-smoothing="0.2" data-gt-direction="left|right"
 export function marquee(ctx) {
@@ -41,6 +41,17 @@ export function marquee(ctx) {
     let dir = baseDir; // persists until the next scroll in the other direction
     let boostNow = 1;
     let active = true;
+    let userPaused = false;
+    let hoverPaused = false;
+    const pauseOnHover = bool(el, 'pause-on-hover', true);
+    const toggleBtn = (el.parentElement && el.parentElement.querySelector('[data-gt-marquee-toggle]')) || null;
+    const undoBtn = toggleBtn ? a11yButton(toggleBtn) : () => {};
+    const onToggle = (e) => { e.preventDefault(); userPaused = !userPaused; toggleBtn.setAttribute('aria-pressed', String(userPaused)); };
+    if (toggleBtn) { toggleBtn.setAttribute('aria-pressed', 'false'); toggleBtn.addEventListener('click', onToggle); }
+    const hp = (v) => () => { if (pauseOnHover) hoverPaused = v; };
+    const onIn = hp(true), onOut = hp(false);
+    el.addEventListener('mouseenter', onIn); el.addEventListener('mouseleave', onOut);
+    el.addEventListener('focusin', onIn); el.addEventListener('focusout', onOut);
 
     const st = ScrollTrigger.create({
       trigger: el,
@@ -60,7 +71,7 @@ export function marquee(ctx) {
     });
 
     const tick = (_t, dt) => {
-      if (!active || !groupW) return;
+      if (!active || !groupW || userPaused || hoverPaused) return;
       const sec = dt / 1000;
       boostNow += (1 - boostNow) * (1 - Math.exp(-sec / (smoothing * 4))); // decay back to 1
       const target = dir * speed * remPx() * boostNow;
@@ -78,6 +89,10 @@ export function marquee(ctx) {
       ScrollTrigger.removeEventListener('refreshInit', onResize);
       st.kill();
       scrollSt.kill();
+      undoBtn();
+      if (toggleBtn) { toggleBtn.removeEventListener('click', onToggle); toggleBtn.removeAttribute('aria-pressed'); }
+      el.removeEventListener('mouseenter', onIn); el.removeEventListener('mouseleave', onOut);
+      el.removeEventListener('focusin', onIn); el.removeEventListener('focusout', onOut);
       el.classList.remove('gt-marquee');
       el.innerHTML = original;
     });

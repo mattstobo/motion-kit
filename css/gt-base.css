@@ -1,14 +1,12 @@
 /* motion-kit base CSS. gt-js is added in <head> only when motion is allowed. */
 
-/* Initial hidden states (prevent flash). The head snippet removes gt-js if the kit fails to load. */
+/* Initial hidden states (prevent flash). Opacity only, never visibility/display, so screen readers and find-in-page still see the text.
+   The head snippet removes gt-js if the kit fails to load. */
 .gt-js [data-gt~="reveal"],
 .gt-js [data-gt~="reveal-group"] > *,
-.gt-js [data-gt~="reveal-group"][data-gt-children] *{ visibility: hidden; }
 .gt-js [data-gt~="split-text"],
-.gt-js [data-gt~="text-scrub"]{ visibility: hidden; }
+.gt-js [data-gt~="text-scrub"]{ opacity: 0; }
 .gt-js [data-gt~="image-mask"]{ clip-path: inset(0 0 100% 0); }
-.gt-js.gt-ready [data-gt~="reveal"],
-.gt-js.gt-ready [data-gt~="reveal-group"] > *{ visibility: inherit; }
 [data-gt~="parallax"]{ will-change: transform; }
 
 /* ---------- Links ---------- */
@@ -43,17 +41,16 @@
 [data-gt~="link"][data-gt-style="underline"]:focus-visible{ background-size:100% var(--gt-link-thickness); }
 
 /* roll */
-.gt-roll{ display:inline-block; position:relative; overflow:hidden; vertical-align:top; line-height:inherit; }
-.gt-roll__a{ display:block; }
-.gt-roll__b{ display:block; position:absolute; left:0; top:100%; white-space:nowrap; }
+.gt-roll{ display:inline-grid; overflow:hidden; vertical-align:top; line-height:inherit; padding-bottom:.12em; margin-bottom:-.12em; }
+.gt-roll__a, .gt-roll__b{ grid-area:1 / 1; white-space:nowrap; }
 
 /* ---------- Buttons ---------- */
 .gt-btn{ position:relative; overflow:hidden; isolation:isolate; display:inline-flex; align-items:center; gap:.75rem; }
 .gt-btn--outline{ background:transparent; border:.0625rem solid var(--gt-button-border); }
 .gt-btn__bg{ position:absolute; inset:0; z-index:-1; background:var(--gt-button-fill); will-change:transform; }
-.gt-btn__label{ position:relative; display:block; overflow:hidden; }
-.gt-btn__a{ display:block; }
-.gt-btn__b{ display:block; position:absolute; left:0; top:100%; white-space:nowrap; color:var(--gt-button-text-hover); }
+.gt-btn__label{ position:relative; display:inline-grid; overflow:hidden; padding-bottom:.12em; margin-bottom:-.12em; }
+.gt-btn__a, .gt-btn__b{ grid-area:1 / 1; white-space:nowrap; }
+.gt-btn__b{ color:var(--gt-button-text-hover); }
 .gt-btn--arrow .gt-btn__label{ overflow:visible; }
 .gt-btn--arrow .gt-btn__b{ display:none; }
 .gt-btn--arrow:hover .gt-btn__a,
@@ -68,3 +65,28 @@
 /* ---------- Mobile nav ---------- */
 html.gt-nav-open{ overflow:hidden; }
 [data-gt-nav="panel"][inert]{ pointer-events:none; }
+
+/* ---------- Dropdowns ---------- */
+[data-gt-nav="dropdown"]{ position:relative; }
+[data-gt-nav="dropdown-menu"]{ visibility:hidden; }
+[data-gt-nav="dropdown-toggle"][aria-expanded="true"] [data-gt-nav="dropdown-icon"]{ transform:rotate(180deg); }
+
+/* ---------- Accessibility ---------- */
+.gt-skip{ position:absolute; left:1rem; top:1rem; z-index:1000; padding:.75rem 1rem; background:#fff; color:#111; text-decoration:underline; transform:translateY(-200%); }
+.gt-skip:focus, .gt-skip:focus-visible{ transform:none; outline:.125rem solid currentColor; outline-offset:.125rem; }
+.gt-sr-only{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+[data-gt~="link"]:focus-visible,
+[data-gt-nav="toggle"]:focus-visible,
+[data-gt-nav="dropdown-toggle"]:focus-visible,
+[data-gt-nav="panel"] a:focus-visible,
+[data-gt-nav="dropdown-menu"] a:focus-visible,
+.gt-btn:focus-visible,
+[data-gt-marquee-toggle]:focus-visible{ outline:.125rem solid currentColor; outline-offset:.25rem; }
+[data-gt-nav="toggle"], [data-gt-nav="dropdown-toggle"], [data-gt-marquee-toggle]{ min-height:2.75rem; min-width:2.75rem; }
+/* Windows high-contrast: background-image underlines disappear, so use real underlines */
+@media (forced-colors: active){
+  [data-gt~="link"][data-gt-style="underline"],
+  [data-gt~="link"][data-gt-style="underline-static"]{ background-image:none; text-decoration:underline; }
+  .gt-btn__bg{ display:none; }
+  .gt-btn{ border:.0625rem solid ButtonText; }
+}

@@ -3,9 +3,12 @@ import { all, attr, num, bool, toPx, fromVec, cfg } from '../core.js';
 function tweenFor(el, targets, extra = {}) {
   const dist = toPx(attr(el, 'distance', '2rem'));
   const from = fromVec(attr(el, 'from', 'up'), dist);
-  return gsap.from(targets, {
-    ...from,
-    autoAlpha: 0,
+  // opacity only (never visibility): hidden content must stay readable by screen readers and find-in-page
+  return gsap.fromTo(targets, { x: 0, y: 0, ...from, opacity: 0 }, {
+    x: 0,
+    y: 0,
+    opacity: 1,
+    clearProps: 'transform',
     duration: num(el, 'duration', cfg.duration),
     delay: num(el, 'delay', 0),
     ease: attr(el, 'ease', cfg.ease),

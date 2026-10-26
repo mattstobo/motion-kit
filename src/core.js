@@ -45,3 +45,23 @@ export const fromVec = (dir, dist) => {
 };
 
 export const canHover = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+// Make any element behave as a real button for keyboard + assistive tech (Webflow can output <a> for buttons).
+export const a11yButton = (el) => {
+  if (!el || el.tagName === 'BUTTON') return () => {};
+  const hadRole = el.hasAttribute('role');
+  const hadTab = el.hasAttribute('tabindex');
+  if (!hadRole) el.setAttribute('role', 'button');
+  if (!hadTab) el.setAttribute('tabindex', '0');
+  const onKey = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+  };
+  el.addEventListener('keydown', onKey);
+  return () => {
+    el.removeEventListener('keydown', onKey);
+    if (!hadRole) el.removeAttribute('role');
+    if (!hadTab) el.removeAttribute('tabindex');
+  };
+};
+
+export const isVisible = (el) => !!(el.getClientRects().length) && getComputedStyle(el).visibility !== 'hidden';

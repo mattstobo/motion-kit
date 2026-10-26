@@ -40,13 +40,13 @@ export function button(ctx) {
     const d = num(el, 'duration', 0.5);
     const ease = attr(el, 'ease', 'power3.inOut');
     gsap.set(bg, { yPercent: 101 });
-    gsap.set(b, { yPercent: 0 });
+    gsap.set(b, { yPercent: 100 });
     const tl = gsap.timeline({ paused: true, defaults: { duration: d, ease } });
     tl.to(bg, { yPercent: 0 }, 0);
     if (style === 'arrow') {
       tl.to(arrow, { x: num(el, 'arrow-distance', 6) * 1.6 , duration: d }, 0);
     } else {
-      tl.to(a, { yPercent: -100 }, 0).to(b, { yPercent: -100 }, 0);
+      tl.to(a, { yPercent: -100 }, 0).to(b, { yPercent: 0 }, 0);
     }
     const play = () => tl.play();
     const rev = () => tl.reverse();

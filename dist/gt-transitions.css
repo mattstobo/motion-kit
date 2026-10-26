@@ -2,15 +2,18 @@
   motion-kit page transitions (CSS cross-document View Transitions)
   Chrome/Edge 126+, Safari 18.2+. Unsupported browsers just navigate normally.
   Variant is chosen by <html data-gt-transition="...">. Tune with CSS variables on :root.
-  Variants: fade, fade-up, wipe-up, wipe-left, mask-circle, mask-diamond, slide, curtain
+  Variants: fade, fade-up, wipe-up, wipe-left, slide, curtain, pull-back
 */
 @view-transition{ navigation:auto; }
 
 :root{
   --gt-tv-duration: .7s;
   --gt-tv-ease: cubic-bezier(.65,0,.35,1);
-  --gt-tv-x: 50%;   /* origin for mask-circle */
-  --gt-tv-y: 50%;
+  --gt-tv-back-scale: .9;       /* pull-back: how small the old page gets */
+  --gt-tv-back-shift: 6vh;      /* pull-back: how far the old page drops */
+  --gt-tv-back-dim: .35;        /* pull-back: old page brightness at the end */
+  --gt-tv-back-radius: 1.5rem;  /* pull-back: corner radius of both pages */
+  --gt-tv-backdrop: #0b0b0b;    /* pull-back: colour behind the pages */
   --gt-tv-distance: 2rem;
 }
 
@@ -42,13 +45,9 @@ html[data-gt-transition="fade-up"]::view-transition-new(root){ animation-name: g
 
 /* ----- wipes: new page revealed over the old one ----- */
 html[data-gt-transition="wipe-up"]::view-transition-old(root),
-html[data-gt-transition="wipe-left"]::view-transition-old(root),
-html[data-gt-transition="mask-circle"]::view-transition-old(root),
-html[data-gt-transition="mask-diamond"]::view-transition-old(root){ animation: none; z-index:1; }
+html[data-gt-transition="wipe-left"]::view-transition-old(root){ animation: none; z-index:1; }
 html[data-gt-transition="wipe-up"]::view-transition-new(root){ animation-name: gt-wipe-up; z-index:2; }
 html[data-gt-transition="wipe-left"]::view-transition-new(root){ animation-name: gt-wipe-left; z-index:2; }
-html[data-gt-transition="mask-circle"]::view-transition-new(root){ animation-name: gt-mask-circle; z-index:2; }
-html[data-gt-transition="mask-diamond"]::view-transition-new(root){ animation-name: gt-mask-diamond; z-index:2; }
 
 /* ----- slide: old pushed left, new slides in ----- */
 html[data-gt-transition="slide"]::view-transition-old(root){ animation-name: gt-slide-out; }
@@ -58,16 +57,23 @@ html[data-gt-transition="slide"]::view-transition-new(root){ animation-name: gt-
 html[data-gt-transition="curtain"]::view-transition-old(root){ animation-name: gt-curtain; z-index:2; }
 html[data-gt-transition="curtain"]::view-transition-new(root){ animation: none; z-index:1; }
 
+/* ----- pull-back: old page drops, shrinks and darkens; new page slides up over it ----- */
+html[data-gt-transition="pull-back"]::view-transition{ background: var(--gt-tv-backdrop); }
+html[data-gt-transition="pull-back"]::view-transition-old(root){ animation-name: gt-pullback-out; z-index:1; transform-origin: 50% 0%; }
+html[data-gt-transition="pull-back"]::view-transition-new(root){ animation-name: gt-pullback-in; z-index:2; }
+
+@keyframes gt-pullback-out{
+  to{ transform: translateY(var(--gt-tv-back-shift)) scale(var(--gt-tv-back-scale)); filter: brightness(var(--gt-tv-back-dim)); border-radius: var(--gt-tv-back-radius); }
+}
+@keyframes gt-pullback-in{
+  from{ transform: translateY(100%); border-radius: var(--gt-tv-back-radius) var(--gt-tv-back-radius) 0 0; }
+  to{ transform: translateY(0); border-radius: 0; }
+}
 @keyframes gt-fade-out{ to{ opacity:0; } }
 @keyframes gt-fade-in{ from{ opacity:0; } }
 @keyframes gt-fade-up-in{ from{ opacity:0; transform:translateY(var(--gt-tv-distance)); } }
 @keyframes gt-wipe-up{ from{ clip-path:inset(100% 0 0 0); } to{ clip-path:inset(0 0 0 0); } }
 @keyframes gt-wipe-left{ from{ clip-path:inset(0 0 0 100%); } to{ clip-path:inset(0 0 0 0); } }
-@keyframes gt-mask-circle{ from{ clip-path:circle(0% at var(--gt-tv-x) var(--gt-tv-y)); } to{ clip-path:circle(150% at var(--gt-tv-x) var(--gt-tv-y)); } }
-@keyframes gt-mask-diamond{
-  from{ clip-path:polygon(50% 50%,50% 50%,50% 50%,50% 50%); }
-  to{ clip-path:polygon(50% -100%,200% 50%,50% 200%,-100% 50%); }
-}
 @keyframes gt-slide-out{ to{ transform:translateX(-25%); opacity:.4; } }
 @keyframes gt-slide-in{ from{ transform:translateX(100%); } }
 @keyframes gt-curtain{ from{ clip-path:inset(0 0 0 0); } to{ clip-path:inset(0 0 100% 0); } }

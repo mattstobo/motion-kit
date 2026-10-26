@@ -9,7 +9,7 @@ import { marquee } from './modules/marquee.js';
 import { nav } from './modules/nav.js';
 import { transitions } from './modules/transitions.js';
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 let mm = null;
 let navCtx = null;
 const navCleanups = [];

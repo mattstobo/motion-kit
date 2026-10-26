@@ -4,8 +4,9 @@ import { JSDOM } from 'jsdom';
 import { readFileSync } from 'node:fs';
 const read = (p) => readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const html = `<!doctype html><html class="gt-js"><body>
-<nav data-gt-nav="root" data-gt-nav-style="slide"><button data-gt-nav="toggle">Menu</button>
-<div data-gt-nav="panel"><a data-gt-nav="item" href="#a">A</a><a data-gt-nav="item" href="#b">B</a></div></nav>
+<nav data-gt-nav="root" data-gt-nav-style="slide"><a data-gt-nav="toggle">Menu</a>
+<div data-gt-nav="panel"><a data-gt-nav="item" href="#a">A</a><a data-gt-nav="item" href="#b">B</a>
+<div data-gt-nav="dropdown"><button data-gt-nav="dropdown-toggle">More</button><div data-gt-nav="dropdown-menu"><a href="#c">C</a></div></div></div></nav>
 <h1 data-gt="split-text" data-gt-split="chars">Hello world</h1>
 <p data-gt="reveal">r</p><div data-gt="reveal-group"><i>1</i><i>2</i></div>
 <div style="overflow:hidden"><img data-gt="parallax" alt=""></div>
@@ -42,6 +43,12 @@ const checks = {
   'transition attr set': !!w.document.documentElement.dataset.gtTransition,
 };
 q('[data-gt-nav=toggle]').click();
+checks['nav landmark label'] = q('nav').getAttribute('aria-label') === 'Main';
+checks['non-button toggle gets role+tabindex'] = q('[data-gt-nav=toggle]').getAttribute('role') === 'button' && q('[data-gt-nav=toggle]').getAttribute('tabindex') === '0';
+checks['dropdown aria wired'] = q('[data-gt-nav=dropdown-toggle]').getAttribute('aria-expanded') === 'false' && !!q('[data-gt-nav=dropdown-toggle]').getAttribute('aria-controls');
+q('[data-gt-nav=dropdown-toggle]').click();
+checks['dropdown opens'] = q('[data-gt-nav=dropdown-toggle]').getAttribute('aria-expanded') === 'true';
+checks['reveal never uses visibility'] = !q('[data-gt=reveal]').style.visibility;
 checks['nav opens'] = q('[data-gt-nav=toggle]').getAttribute('aria-expanded') === 'true' && !q('[data-gt-nav=panel]').hasAttribute('inert');
 w.document.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape' }));
 checks['esc closes'] = q('[data-gt-nav=toggle]').getAttribute('aria-expanded') === 'false';

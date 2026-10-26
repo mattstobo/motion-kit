@@ -15,7 +15,7 @@ export function splitText(ctx) {
         const y = String(dist).includes('%') ? { yPercent: parseFloat(dist) } : { y: toPx(dist) };
         return gsap.from(targets, {
           ...y,
-          autoAlpha: useMask ? 1 : 0,
+          opacity: useMask ? 1 : 0,
           duration: num(el, 'duration', 1),
           delay: num(el, 'delay', 0),
           stagger: num(el, 'stagger', type === 'chars' ? 0.02 : type === 'words' ? 0.06 : 0.1),
@@ -25,7 +25,7 @@ export function splitText(ctx) {
       },
     };
     SplitText.create(el, opts);
-    el.style.visibility = 'visible'; // CSS hides pre-split to avoid a flash
+    el.style.opacity = '1'; // CSS dims it pre-split to avoid a flash
   });
 }
 
@@ -38,7 +38,7 @@ export function textScrub(ctx) {
       onSplit(self) {
         return gsap.fromTo(
           self.words,
-          { opacity: num(el, 'from-opacity', 0.15) },
+          { opacity: num(el, 'from-opacity', 0.4) },
           {
             opacity: 1,
             ease: 'none',
@@ -53,6 +53,6 @@ export function textScrub(ctx) {
         );
       },
     });
-    el.style.visibility = 'visible';
+    el.style.opacity = '1';
   });
 }

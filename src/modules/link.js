@@ -21,7 +21,8 @@ export function link(ctx) {
     wrap.append(a, b);
     el.append(wrap);
     const tl = gsap.timeline({ paused: true, defaults: { duration: num(el, 'duration', 0.5), ease: attr(el, 'ease', 'power3.inOut') } });
-    tl.to(a, { yPercent: -100 }, 0).fromTo(b, { yPercent: 0 }, { yPercent: -100 }, 0);
+    gsap.set(b, { yPercent: 100 });
+    tl.to(a, { yPercent: -100 }, 0).to(b, { yPercent: 0 }, 0);
     const play = () => tl.play();
     const rev = () => tl.reverse();
     el.addEventListener('mouseenter', play);
