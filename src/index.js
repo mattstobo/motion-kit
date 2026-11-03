@@ -10,7 +10,7 @@ import { nav } from './modules/nav.js';
 import { transitions } from './modules/transitions.js';
 import { counter, scheme, progress, magnetic, cursor, hscroll, hoverList } from './modules/extras.js';
 
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 const MODULES = [reveal, revealGroup, parallax, splitText, textScrub, imageMask, link, button, marquee, counter, scheme, progress, magnetic, cursor, hscroll, hoverList];
 const params = new URLSearchParams(location.search);
 

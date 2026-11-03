@@ -77,6 +77,11 @@ html[data-gt-transition="parallax-cover"]::view-transition-old(root){
 html[data-gt-transition="parallax-cover"]::view-transition-new(root){
   animation-name: gt-cover-in; animation-duration: var(--gt-tv-cover-duration); animation-timing-function: var(--gt-tv-cover-ease); z-index:2;
 }
+/* phones (767px and below): no animation, the page just swaps */
+@media (max-width: 767px){
+  html[data-gt-transition="parallax-cover"]::view-transition-old(root),
+  html[data-gt-transition="parallax-cover"]::view-transition-new(root){ animation: none; }
+}
 @keyframes gt-cover-out{ to{ transform: translateY(var(--gt-tv-cover-shift)); filter: brightness(var(--gt-tv-cover-dim)); } }
 @keyframes gt-cover-in{
   from{ transform: translateY(100%); border-radius: var(--gt-tv-cover-radius) var(--gt-tv-cover-radius) 0 0; }

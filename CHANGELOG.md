@@ -15,3 +15,6 @@ Initial release: reveal, reveal-group, parallax, split-text, text-scrub, image-m
 
 ## 1.3.0
 - New page transition `parallax-cover` (1.2s, cubic-bezier(.7,.05,.13,1), old page drifts up 25vh and darkens, new page slides over). `pull-back` is unchanged.
+
+## 1.3.1
+- `parallax-cover` no longer animates at 767px and below (instant swap).
