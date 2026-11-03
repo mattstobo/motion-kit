@@ -77,8 +77,9 @@ Root options: `data-gt-nav-dropdown-hover` (false), `data-gt-nav-dropdown-durati
 - Text scrub starts at 0.4 opacity (0.15 failed contrast). You still need to check colour contrast on your own designs.
 
 ## Page transitions
-Chrome/Edge and Safari 18.2+ only; elsewhere pages just load normally. Set the site default in head: `<script>window.MotionKitConfig={transition:'wipe-up'}</script>` (before the kit).
-Override per link with `data-gt-transition="mask-circle"`. Variants: `fade`, `fade-up`, `wipe-up`, `wipe-left`, `slide`, `curtain`, `pull-back`, `parallax-cover`.
+Chrome/Edge and Safari 18.2+ only; elsewhere pages just load normally. Set the site default in head: `<script>window.MotionKitConfig={transition:'color-wipe'}</script>` (before the kit).
+Override per link with `data-gt-transition="color-wipe"`. Variants: `fade`, `fade-up`, `color-wipe`, `slide`, `pull-back`, `parallax-cover`. Deprecated, removed in 2.0.0: `wipe-up`, `wipe-left`, `curtain`.
+`color-wipe`: a colour block rises over the old page, then the new page rises over the block. 1.4s total. Does not animate on phones (767px and below). Tune with `--gt-tv-wipe-color` (#0b0b0b), `--gt-tv-wipe-duration` (1.4s), `--gt-tv-wipe-ease`, `--gt-tv-wipe-skew` (12vh, 0 for a straight edge), `--gt-tv-wipe-shift` (8vh parallax, 0 for none).
 `parallax-cover`: the old page drifts up 25vh and darkens while the new page slides up over it. 1.2s, `cubic-bezier(.7,.05,.13,1)`. Does not animate on phones (767px and below). Tune with `--gt-tv-cover-duration`, `--gt-tv-cover-ease`, `--gt-tv-cover-shift`, `--gt-tv-cover-dim`, `--gt-tv-cover-radius`.
 `pull-back`: the old page drops, shrinks and darkens while the new page slides up over it. Tune with `--gt-tv-back-scale` (0.9), `--gt-tv-back-shift` (6vh), `--gt-tv-back-dim` (0.35), `--gt-tv-back-radius` (1.5rem), `--gt-tv-backdrop` (#0b0b0b).
 Keep nav/footer still: `data-gt-persist="nav"` / `"footer"` (the same on every page). Tune with `--gt-tv-duration`, `--gt-tv-ease`.

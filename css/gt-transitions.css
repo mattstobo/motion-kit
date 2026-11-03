@@ -2,7 +2,8 @@
   motion-kit page transitions (CSS cross-document View Transitions)
   Chrome/Edge 126+, Safari 18.2+. Unsupported browsers just navigate normally.
   Variant is chosen by <html data-gt-transition="...">. Tune with CSS variables on :root.
-  Variants: fade, fade-up, wipe-up, wipe-left, slide, curtain, pull-back, parallax-cover
+  Variants: fade, fade-up, color-wipe, slide, pull-back, parallax-cover
+  Deprecated (still work, removed in 2.0.0): wipe-up, wipe-left, curtain
 */
 @view-transition{ navigation:auto; }
 
@@ -21,6 +22,13 @@
   --gt-tv-cover-shift: -25vh;   /* how far the old page travels (negative = up) */
   --gt-tv-cover-dim: .2;        /* old page brightness at the end (0 black, 1 unchanged) */
   --gt-tv-cover-radius: 0rem;   /* rounded top corners of the incoming page */
+
+  /* color-wipe: a colour block rises over the old page, then the new page rises over the block */
+  --gt-tv-wipe-color: #0b0b0b;  /* the block */
+  --gt-tv-wipe-duration: 1.4s;  /* whole transition; each half takes half of this */
+  --gt-tv-wipe-ease: cubic-bezier(.65, .05, .2, 1);
+  --gt-tv-wipe-skew: 12vh;      /* angle of the leading edge (0 = straight line) */
+  --gt-tv-wipe-shift: 8vh;      /* parallax: old page drifts up, new page settles in (0 = none) */
   --gt-tv-distance: 2rem;
 }
 
@@ -55,6 +63,28 @@ html[data-gt-transition="wipe-up"]::view-transition-old(root),
 html[data-gt-transition="wipe-left"]::view-transition-old(root){ animation: none; z-index:1; }
 html[data-gt-transition="wipe-up"]::view-transition-new(root){ animation-name: gt-wipe-up; z-index:2; }
 html[data-gt-transition="wipe-left"]::view-transition-new(root){ animation-name: gt-wipe-left; z-index:2; }
+
+/* ----- color-wipe ----- */
+html[data-gt-transition="color-wipe"]::view-transition{ background: var(--gt-tv-wipe-color); }
+html[data-gt-transition="color-wipe"]::view-transition-old(root){
+  animation-name: gt-cwipe-out; animation-duration: var(--gt-tv-wipe-duration); animation-timing-function: linear; z-index:1;
+}
+html[data-gt-transition="color-wipe"]::view-transition-new(root){
+  animation-name: gt-cwipe-in; animation-duration: var(--gt-tv-wipe-duration); animation-timing-function: linear; z-index:2;
+}
+/* phones (767px and below): no animation, the page just swaps */
+@media (max-width: 767px){
+  html[data-gt-transition="color-wipe"]::view-transition-old(root),
+  html[data-gt-transition="color-wipe"]::view-transition-new(root){ animation: none; }
+}
+@keyframes gt-cwipe-out{
+  0%{ clip-path: polygon(0 0, 100% 0, 100% calc(100% + var(--gt-tv-wipe-skew)), 0 100%); transform: translateY(0); animation-timing-function: var(--gt-tv-wipe-ease); }
+  50%, 100%{ clip-path: polygon(0 0, 100% 0, 100% 0%, 0 calc(0% - var(--gt-tv-wipe-skew))); transform: translateY(calc(var(--gt-tv-wipe-shift) * -1)); }
+}
+@keyframes gt-cwipe-in{
+  0%, 50%{ clip-path: polygon(0 100%, 100% calc(100% + var(--gt-tv-wipe-skew)), 100% calc(100% + var(--gt-tv-wipe-skew)), 0 100%); transform: translateY(var(--gt-tv-wipe-shift)); animation-timing-function: var(--gt-tv-wipe-ease); }
+  100%{ clip-path: polygon(0 calc(0% - var(--gt-tv-wipe-skew)), 100% 0, 100% 100%, 0 100%); transform: translateY(0); }
+}
 
 /* ----- slide: old pushed left, new slides in ----- */
 html[data-gt-transition="slide"]::view-transition-old(root){ animation-name: gt-slide-out; }

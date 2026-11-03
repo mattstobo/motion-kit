@@ -18,3 +18,7 @@ Initial release: reveal, reveal-group, parallax, split-text, text-scrub, image-m
 
 ## 1.3.1
 - `parallax-cover` no longer animates at 767px and below (instant swap).
+
+## 1.4.0
+- New page transition `color-wipe`: a colour block rises over the old page, then the new page rises over it. Variables: `--gt-tv-wipe-color`, `-duration`, `-ease`, `-skew`, `-shift`. No animation at 767px and below.
+- `wipe-up`, `wipe-left` and `curtain` are deprecated (still work, removed from docs, removed in 2.0.0).
