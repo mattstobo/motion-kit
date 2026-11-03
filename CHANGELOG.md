@@ -22,3 +22,6 @@ Initial release: reveal, reveal-group, parallax, split-text, text-scrub, image-m
 ## 1.4.0
 - New page transition `color-wipe`: a colour block rises over the old page, then the new page rises over it. Variables: `--gt-tv-wipe-color`, `-duration`, `-ease`, `-skew`, `-shift`. No animation at 767px and below.
 - `wipe-up`, `wipe-left` and `curtain` are deprecated (still work, removed from docs, removed in 2.0.0).
+
+## 1.5.0
+- New page transition `mask-rise` (CSS only): the new page grows out of a rounded window while the old page zooms and dims. Variables `--gt-tv-mask-*`. No animation at 767px and below.
