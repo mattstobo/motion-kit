@@ -25,3 +25,6 @@ Initial release: reveal, reveal-group, parallax, split-text, text-scrub, image-m
 
 ## 1.5.0
 - New page transition `mask-rise` (CSS only): the new page grows out of a rounded window while the old page zooms and dims. Variables `--gt-tv-mask-*`. No animation at 767px and below.
+
+## 1.5.1
+- `color-wipe` is faster (1.4s to 1s) and uses the `parallax-cover` easing, `cubic-bezier(.7,.05,.13,1)`. This changes defaults of a variant released one version earlier; it has no known users outside the Starter.

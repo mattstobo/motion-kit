@@ -25,8 +25,8 @@
 
   /* color-wipe: a colour block rises over the old page, then the new page rises over the block */
   --gt-tv-wipe-color: #0b0b0b;  /* the block */
-  --gt-tv-wipe-duration: 1.4s;  /* whole transition; each half takes half of this */
-  --gt-tv-wipe-ease: cubic-bezier(.65, .05, .2, 1);
+  --gt-tv-wipe-duration: 1s;    /* whole transition; each half takes half of this */
+  --gt-tv-wipe-ease: cubic-bezier(.7, .05, .13, 1); /* same curve as parallax-cover, applied to each half */
   --gt-tv-wipe-skew: 12vh;      /* angle of the leading edge (0 = straight line) */
   --gt-tv-wipe-shift: 8vh;      /* parallax: old page drifts up, new page settles in (0 = none) */
 
