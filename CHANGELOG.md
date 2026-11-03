@@ -12,3 +12,6 @@ Initial release: reveal, reveal-group, parallax, split-text, text-scrub, image-m
 - New modules: counter, scheme (colour per section), progress, section-nav, magnetic, cursor, hscroll, hover-list, loader.
 - Optional Lenis smooth scroll, `?gt=off` kill switch, `?gt-debug` panel.
 - CMS: scoped re-init with `MotionKit.refresh(el)` and `data-gt-observe`.
+
+## 1.3.0
+- New page transition `parallax-cover` (1.2s, cubic-bezier(.7,.05,.13,1), old page drifts up 25vh and darkens, new page slides over). `pull-back` is unchanged.
